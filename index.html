@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon | Hosted by ZROWEB</title>
+    <meta name="description" content="This website is coming soon. Hosted by ZROWEB Digital Services.">
+    <style>
+        :root {
+            --bg-1: #ffffff;
+            --bg-2: #ece8ff;
+            --ink: #0b1a4d;
+            --indigo: #4f46e5;
+            --purple: #a21caf;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+            background: radial-gradient(ellipse at 50% 45%, var(--bg-1) 0%, #f6f3ff 42%, var(--bg-2) 100%);
+            color: var(--ink);
+        }
+        #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+        .overlay {
+            position: fixed; inset: 0; pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 7vh;
+        }
+        .soon {
+            position: absolute; left: 50%; top: 68%; transform: translateX(-50%);
+            font-size: clamp(30px, 4.4vw, 56px); font-weight: 600; letter-spacing: -0.5px; white-space: nowrap;
+            background:
+                radial-gradient(circle 90px at var(--mx, 85%) 50%, rgba(194,59,208,0.95) 0%, rgba(194,59,208,0) 100%),
+                linear-gradient(90deg, var(--indigo), var(--purple));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .hosted {
+            display: flex; align-items: center; gap: 18px;
+            font-size: clamp(14px, 1.7vw, 22px); color: #4b5563;
+        }
+        .hosted::before, .hosted::after { content: ''; width: clamp(28px, 5vw, 64px); height: 1px; background: #9ca3af; }
+        .hosted b { color: var(--ink); font-weight: 800; letter-spacing: 0.3px; }
+        noscript { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: var(--ink); }
+    </style>
+</head>
+<body>
+    <canvas id="stage" aria-hidden="true"></canvas>
+    <div class="overlay">
+        <div class="soon">Coming soon</div>
+        <div class="hosted">Hosted by <b>ZROWEB</b></div>
+    </div>
+    <noscript>Coming soon</noscript>
+
+<script>
+(function () {
+    'use strict';
+    // World land mask (190 x 84 grid, built from Natural Earth 1:110m land data, public domain)
+    var MASK_B64 = 'AAAAAAAB/gA/+AAAAAAAAAAAAAAAAAAAAAAAAAD//////4AAAAAAAAAAAAAAAAAAAAAAAB//P///8AAP8AAAAAHAAAAAAAAAAAAAgo/j////gAA9AAAAAABgAAAAAAAAAAA8jd8H///+AAAAAAA4AAf4AAAAAAAAAAAMB/gAf//4AAAAAAYAB//gAHAAAAAAAA/E2/gA///AAAAAADAg////wMAAAABAADf57/wB//8AAAAAAYHf////f/AAAB//H8/zznwH//gAAA/gACf////////PAP/////fuXgP/wAAAP/5P/3/////////g///////wfh/8HwAF//wABAAAAAAAAAAD///////n4D8APAAfv/////////////GP//////GTgHwAAAH9/////////////+A//////wB4AOAAAA/n///////////z+AA+g////AHkAAAAAD/P//////////+MAAA4Af//+Af4AAAAEA4//////////wBwAAEAA////B/wAAAAYLH/////////8APAAAAAB////P/wAAAGg7//////////wA4AAAAAD///+//AAAAXP///////////4DAAAAAAP/////8AAAAf////////////QAAAAAAAf////4YAAAAf///////////9AAAAAAAA/////xwAAAD////////////gAAAAAAAD/////wAAAAH//3+P//////+AAAAAAAAP////0AAAAAf7+D5///////zAAAAAAAA////+AAAAAfzn4Hn//////4MAAAAAAAD////wAAAAB8Jv//P//////AAAAAAAAAP///8AAAAAHwiz/8/////8IGAAAAAAAAf///wAAAAAeARP/z/////8wQAAAAAAAB////AAAAAAn8AF///////jHAAAAAAAAB///4AAAAAD/gAP//////+BwAAAAAAAAD//+AAAAAAf/zA///////8MAAAAAAAAAL//4AAAAAD//v////////wAAAAAAAAAAf/AgAAAAAP////7//////AAAAAAAAAAB/wCAAAAAB/////3/////8AAAAAAAAAAC/AAAAAAAP///9/j/////gAAAAAAAAAAF8AAAAAAB////7/wf///9AAAAAAAAAAADwDgAAAAH////v/g////AAAAAAAAAAAAPjDAAAAAf///+f+A/z/AAAAAAAAAAAAAecBgAAAB////9/wD8H9AAAAAAAAAAAAA/gAAAAAH////z+APgfwEAAAAAAAAAAAAPwAAAAAf////vgAcAfgQAAAAAAAAAAAAPAAAAAB/////4ABwB/BgAAAAAAAAAAAAMAAAAAH////+AAHAC4BAAAAAAAAAAAAAw/gAAAP/////gAMABgIAAAAAAAAAAAAB//AAAAf////8AAoBgAQAAAAAAAAAAAAAf+AAAB/////wAAgCABAAAAAAAAAAAAAB//AAAD8///+AAAAkDAAAAAAAAAAAAAAH/+AAAAA///4AAABQcAAAAAAAAAAAAAA//4AAAAB///AAAADjwAAAAAAAAAAAAAH//gAAAAP//4AAAAMfRAAAAAAAAAAAAAf//wAAAA///AAAAAY9BgAAAAAAAAAAAB///4AAAB//4AAAABzsD4AAAAAAAAAAAH///wAAAD//gAAAADAYH5AAAAAAAAAAAf///gAAAP/8AAAAAGAAHwAAAAAAAAAAA///+AAAA//4AAAAADAAdAAAAAAAAAAAD///4AAAB//gAAAAAAEACAAAAAAAAAAAH///AAAAH/+AAAAAAAAAAAAAAAAAAAAAf//8AAAA//4QAAAAAAPMAAAAAAAAAAAA///gAAAD//hAAAAAAD8wAAAAAAAAAAAB//+AAAAP/+cAAAAAAf7gAAAAAAAAAAAD//4AAAA//hwAAAAAD/+AAAAAAAAAAAAH//gAAAD/8HAAAAAA//8AAAAAAAAAAAAf/8AAAAH/wYAAAAAP//4BAAAAAAAAAAD//gAAAAf/hgAAAAA///wAAAAAAAAAAAP/4AAAAB/8EAAAAAD///AAAAAAAAAAAA//AAAAAD/gAAAAAAP//+AAAAAAAAAAAD/8AAAAAP+AAAAAAA///4AAAAAAAAAAAP/gAAAAAfwAAAAAAD///gAAAAAAAAAAA/+AAAAAB+AAAAAAAH9/8AAAAAAAAAAAD/wAAAAAHwAAAAAAA+B/wAAAAAAAAAAAf8AAAAAAAAAAAAAABAD+ABAAAAAAAAAB/wAAAAAAAAAAAAAAAAH4ACAAAAAAAAAH+AAAAAAAAAAAAAAAAAGAAMAAAAAAAAAfgAAAAAAAAAAAAAAAAAAAAgAAAAAAAAB8AAAAAAAAAAAAAAAAAAwAMAAAAAAAAAHwAAAAAAAAAAAAAAAAAAABgAAAAAAAAA+AAAAAAAAAAAAAAAAAAAAMAAAAAAAAAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+    var COLS = 190, ROWS = 84;
+    var LON0 = -170, LON1 = 190, LAT_TOP = 84, LAT_BOT = -58;
+
+    var canvas = document.getElementById('stage');
+    var ctx = canvas.getContext('2d');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var bin = atob(MASK_B64), land = new Uint8Array(COLS * ROWS);
+    for (var i = 0; i < land.length; i++) { land[i] = (bin.charCodeAt(i >> 3) >> (7 - (i & 7))) & 1; }
+
+    // ZROWEB logo icon as a dot grid: n = navy dot, b = blue dot, . = empty (sampled from the logo artwork)
+    var LOGO = '...bbbbbbbbbbbbbbbbbbbbbbbbbbbbb............bbbbbbb.....bbbbbbbb|....bbbbbbbbbbbbbbbbbbbbbbbbbbbbb..........bbbbbbbb....bnnnnnnnn|.....bbbbbbbbbbbbbbbbbbbbbbbbbbbb.........bbbbbbbbb....nnnnnnnn.|......bbbbbbbbbbbbbbbbbbbbbbbbbbb.........bbbbbbbb....nnnnnnnnb.|........bbbbbbbbbbbbbbbbbbbbbbbbbb.......bbbbbbbb.....nnnnnnnn..|.........bbbbbbbbbbbbbbbbbbbbbbbbb.......bbbbbbbb....nnnnnnnn...|..........bbbbbbbbbbbbbbbbbbbbbbbb......bbbbbbbb....bnnnnnnnn...|...........bbbbbbbbbbbbbbbbbbbbbbbb....bbbbbbbbb....nnnnnnnn....|....................bbbbbbbbbbbbbbb....bbbbbbbb....nnnnnnnnn....|....................bbbbbbbbbbbbbbb...bbbbbbbb....bnnnnnnnn.....|...................bbbbbbbbbbbbbbbbb..bbbbbbbb....nnnnnnnnb.....|..................bbbbbbbbb.bbbbbbbb.bbbbbbbb....nnnnnnnnn......|..................bbbbbbbb..bbbbbbbbbbbbbbbbb....nnnnnnnn.......|.................bbbbbbbbb..bbbbbbbbbbbbbbbb....nnnnnnnnn.......|.................bbbbbbbb....bbbbbbbbbbbbbbb....nnnnnnnn........|................bbbbbbbb.....bbbbbbbbbbbbbb....nnnnnnnnn........|...............bbbbbbbbb.....bbbbbbbbbbbbb....bnnnnnnnn.........|...............bbbbbbbb.......bbbbbbbbbbbb....nnnnnnnnb.........|..............nnnnnnnnb..bbbbbbbbbbbbbbbb....nnnnnnnnn..........|.............bnnnnnnnn...bbbbbbbbbbbbbbbb....nnnnnnnn...........|.............nnnnnnnn....bbbbbbbbbbbbbbb....nnnnnnnnn...........|............nnnnnnnnn.....bbbbbbbbbbbbb....nnnnnnnnn............|............nnnnnnnn......bbbbbbbbbbbbb....nnnnnnnnn............|...........nnnnnnnn........bbbbbbbbbbb....nnnnnnnnn.............|..........nnnnnnnnn........bbbbbbbbbbb....nnnnnnnnn.............|..........nnnnnnnn.........bbbbbbbbbb....bnnnnnnnn..............|.........nnnnnnnnb..........bbbbbbbb....bbnnnnnnnn..............|.........nnnnnnnn...........bbbbbbbb....bbbnnnnnn...............|........nnnnnnnn............bbbbbbb....bbbbnnnnnb...............|.......nnnnnnnnn.............bbbbbb...bnbbbnnnnn................|.......nnnnnnnn..............bbbbb....bnnnbbnnn.................|......nnnnnnnn...............bbbbb...bnnnnnnnnn.................|.....nnnnnnnnn................bbb....nnnnnnnbn..................|.....nnnnnnnnnnnnnnnnnnnnnn...bb....bnnnnnnnnb...bbbbbbbbbbbbb..|....nnnnnnnnnnnnnnnnnnnnnnn...bb....nnnnnnnnb...bbbbbbbbbbbbb...|...bnnnnnnnnnnnnnnnnnnnnnnn.........nnnnnnnb...bbbbbbbbbbbbb....|...nnnnnnnnnnnnnnnnnnnnnnnnn........bnnnnnb...bbbbbbbbbbbbbb....|..nnnnnnnnnnnnnnnnnnnnnnnnnn.........nnnnn..bbbbbbbbbbbbbbb.....|.bnnnnnnnnnnnnnnnnnnnnnnnnnn.........bnnb..bbbbbbbbbbbbbbbb.....|.nnnnnnnnnnnnnnnnnnnnnnnnnnnn.........nn..bbbbbbbbbbbbbbbb......|bnnnnnnnnnnnnnnnnnnnnnnnnnnnn.........b..bbbbbbbbbbbbbbbb.......'.split('|');
+    var LCOLS = LOGO[0].length, LROWS = LOGO.length;
+
+    // Places shown as small location tags (lat, lon). Our clients are in India, Nepal and the UK.
+    var PLACES = [
+        [30.90, 77.10], [27.70, 85.32], [51.51, -0.13], [28.61, 77.21], [19.08, 72.88], [12.97, 77.59],
+        [25.20, 55.27], [1.35, 103.82], [35.68, 139.69], [-33.87, 151.21], [55.68, 12.57], [48.86, 2.35],
+        [30.04, 31.24], [9.03, 38.74], [-26.20, 28.05], [40.71, -74.01], [34.05, -118.24], [49.28, -123.12],
+        [19.43, -99.13], [-23.55, -46.63], [-34.60, -58.38], [4.71, -74.07], [39.90, 116.41], [37.57, 126.98]
+    ];
+
+    var W = 0, H = 0, dpr = 1;
+    var mapDots = [], zDots = [], pins = [];
+    var W_ = 0, H_ = 0, kScale = 1, reach = 60, mapR = 2, zR = 2, mapPush = 40, zPush = 70, mapRadius = 100, zRadius = 120, revealR = 260;
+    var pointer = { x: -9999, y: -9999, sx: -9999, sy: -9999, active: false, vx: 0, vy: 0 };
+    var t0 = performance.now();
+    var INTRO_Z = 3.8, MAP_START = 3.6, SPREAD = 2.6, HOLD = 5.5, MELT = 2.4, GAP = 3.2;   // seconds
+    var cycle = { c0: MAP_START, n: 0 };
+
+    function build() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth; H = window.innerHeight;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        var cell = Math.max(W / COLS, (H * 0.62) / ROWS);
+        var mw = COLS * cell, mh = ROWS * cell;
+        var ox = (W - mw) / 2, oy = (H - mh) / 2 - H * 0.02;
+        // keep the area around the logo (and the text) calm: map dots thin out there so the icon reads clearly
+        var lzw = Math.min(W * 0.27, 340), lstep = lzw / LCOLS, lzh = lstep * LROWS;
+        var lzx = (W - lzw) / 2, lzy = H * 0.47 - lzh / 2;
+        var clearM = lzw * 0.30;
+        function nearLogo(x, y) {
+            var dx = Math.max(lzx - x, 0, x - (lzx + lzw)), dy = Math.max(lzy - y, 0, y - (lzy + lzh));
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        var tx0 = W / 2 - Math.max(150, W * 0.12), tx1 = W / 2 + Math.max(150, W * 0.12), ty0 = H * 0.62, ty1 = H * 0.76;
+        function nearText(x, y) {
+            var dx = Math.max(tx0 - x, 0, x - tx1), dy = Math.max(ty0 - y, 0, y - ty1);
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        function keepProb(x, y) {
+            var s1 = Math.min(1, nearLogo(x, y) / clearM), s2 = Math.min(1, nearText(x, y) / 70);
+            s1 = s1 * s1 * (3 - 2 * s1); s2 = s2 * s2 * (3 - 2 * s2);
+            return Math.min(s1, s2);
+        }
+        mapDots = [];
+        for (var r = 0; r < ROWS; r++) {
+            for (var c = 0; c < COLS; c++) {
+                if (!land[r * COLS + c]) continue;
+                var hx = ox + (c + 0.5) * cell, hy = oy + (r + 0.5) * cell;
+                if (hx < -cell || hx > W + cell) continue;
+                if (Math.random() > keepProb(hx, hy)) continue;
+                mapDots.push({ hx: hx, hy: hy, x: hx, y: hy, vx: 0, vy: 0, a: 0, pa: 0, f: 0, showT: 9e9, hideT: 9e9, jit: Math.random() });
+            }
+        }
+        mapR = Math.max(1.2, cell * 0.28);
+        W_ = W; H_ = H;
+
+        pins = PLACES.map(function (p, idx) {
+            var px = ox + (p[1] - LON0) / (LON1 - LON0) * mw, py = oy + (LAT_TOP - p[0]) / (LAT_TOP - LAT_BOT) * mh;
+            var lab = Math.abs(p[0]).toFixed(2) + '°' + (p[0] >= 0 ? 'N' : 'S') + ' ' + Math.abs(p[1]).toFixed(2) + '°' + (p[1] >= 0 ? 'E' : 'W');
+            return { x: px, y: py, label: lab, a: 0, pa: 0, home: idx < 3, showT: 9e9, hideT: 9e9, jit: Math.random() };
+        }).filter(function (p) { return p.x > 10 && p.x < W - 90 && nearLogo(p.x, p.y) > clearM * 0.55 && nearText(p.x, p.y) > 40; });
+        scheduleCycle(cycle.c0);
+
+        var zw = Math.min(W * 0.27, 340), step = zw / LCOLS, zh = step * LROWS;
+        var zx = (W - zw) / 2, zy = H * 0.47 - zh / 2;
+        zDots = [];
+        for (var rr = 0; rr < LROWS; rr++) {
+            for (var cc = 0; cc < LCOLS; cc++) {
+                var ch = LOGO[rr].charAt(cc);
+                if (ch === '.') continue;
+                var px2 = zx + (cc + 0.5) * step, py2 = zy + (rr + 0.5) * step;
+                var sx0 = Math.random() * W, sy0 = Math.random() * H;
+                zDots.push({ hx: px2, hy: py2, x: sx0, y: sy0, sx: sx0, sy: sy0, vx: 0, vy: 0, f: 0, t: 0, col: ch === 'b' ? 1 : 0, delay: 0.5 + Math.random() * 1.4, dur: 1.7 + Math.random() * 0.5, on: true, done: false });
+            }
+        }
+        zR = Math.max(1.3, step * 0.36);
+        kScale = zw / 240; reach = 60 * kScale;
+        mapRadius = Math.max(42, Math.min(W, H) * 0.062);
+        zRadius = Math.max(50, Math.min(W, H) * 0.072);
+        mapPush = mapRadius * 0.5;
+        zPush = zRadius * 0.62;
+        revealR = Math.max(140, Math.min(W, H) * 0.24);
+    }
+
+    // dots are pushed away from the pointer and spring back (force depends only on distance, never on pointer speed)
+    function move(list, isMap, now, steps) {
+        var px = pointer.x, py = pointer.y, on = pointer.active, moving = false;
+        for (var i = 0; i < list.length; i++) {
+            var d = list[i];
+            if (isMap) {
+                var want = (now >= d.showT && now < d.hideT) ? 1 : 0;
+                d.a += want ? Math.min(0.05, 1 - d.a) : -Math.min(0.06, d.a);
+                // when the map is hidden, moving the pointer lights up the map dots around it for a moment
+                if (on) {
+                    var rx = d.hx - px, ry = d.hy - py;
+                    if (Math.abs(rx) < revealR && Math.abs(ry) < revealR) {
+                        var rd = Math.sqrt(rx * rx + ry * ry);
+                        if (rd < revealR) d.pa = Math.min(1, d.pa + 0.16 * (1 - rd / revealR) + 0.03);
+                    }
+                }
+                d.pa = Math.max(0, d.pa - 0.012);
+            } else if (!d.done) {
+                var u = (now - d.delay) / d.dur;
+                if (u < 1) {
+                    if (u < 0) { d.t = 0; continue; }
+                    var e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;   // easeInOutCubic
+                    d.x = d.sx + (d.hx - d.sx) * e; d.y = d.sy + (d.hy - d.sy) * e;
+                    d.t = e; continue;
+                }
+                d.done = true; d.x = d.hx; d.y = d.hy; d.vx = d.vy = 0; d.t = 1;
+            }
+            for (var s = 0; s < steps; s++) {
+                if (on) {
+                    var dx = d.x - px, dy = d.y - py;
+                    if (Math.abs(dx) < reach && Math.abs(dy) < reach) {
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < reach && dist > 0.01) { var f = (1 - dist / reach) * 1.3 * kScale; d.vx += dx / dist * f; d.vy += dy / dist * f; }
+                    }
+                }
+                d.vx += (d.hx - d.x) * 0.045; d.vy += (d.hy - d.y) * 0.045;
+                d.vx *= 0.84; d.vy *= 0.84;
+                d.x += d.vx; d.y += d.vy;
+            }
+            if (!isMap) {
+                // colour follows the distance from the pointer: bright purple next to it, back to the logo colour further away
+                var cdx = d.x - px, cdy = d.y - py, cd = on ? Math.sqrt(cdx * cdx + cdy * cdy) / (reach * 1.4) : 1;
+                d.t = Math.min(1, cd);
+            }
+        }
+    }
+
+    // the map plays in cycles: spreads out from a point, holds, melts away, rests, then comes back from another point
+    function scheduleCycle(c0) {
+        cycle.c0 = c0;
+        var O = [[0.24, 0.40], [0.56, 0.46], [0.30, 0.74], [0.78, 0.35]], o = O[cycle.n % O.length];
+        var ox2 = o[0] * W, oy2 = o[1] * H, maxD = Math.sqrt(W * W + H * H) * 0.75, i, d, dist;
+        for (i = 0; i < mapDots.length; i++) {
+            d = mapDots[i]; dist = Math.min(1, Math.sqrt((d.hx - ox2) * (d.hx - ox2) + (d.hy - oy2) * (d.hy - oy2)) / maxD);
+            d.showT = c0 + dist * SPREAD + d.jit * 0.5;
+            d.hideT = c0 + SPREAD + HOLD + dist * MELT + d.jit * 0.35;
+        }
+        for (i = 0; i < pins.length; i++) {
+            d = pins[i]; dist = Math.min(1, Math.sqrt((d.x - ox2) * (d.x - ox2) + (d.y - oy2) * (d.y - oy2)) / maxD);
+            d.showT = c0 + dist * SPREAD + 0.5 + d.jit * 0.6;
+            d.hideT = c0 + SPREAD + HOLD + dist * MELT - 0.3 + d.jit * 0.2;
+        }
+        cycle.end = c0 + SPREAD + HOLD + MELT + 0.6 + GAP;
+    }
+
+    var NB = 8;
+    function drawMap() {
+        var b, i, d, r;
+        for (b = 0; b < NB; b++) {
+            var lo = b / NB, hi = (b + 1) / NB;
+            ctx.fillStyle = 'rgba(124,112,225,' + (0.06 + 0.40 * (b + 0.5) / NB).toFixed(3) + ')';
+            ctx.beginPath();
+            for (i = 0; i < mapDots.length; i++) {
+                d = mapDots[i];
+                var ea = d.a > d.pa ? d.a : d.pa;
+                if (ea <= lo || ea > hi) continue;
+                r = mapR * (1 + d.f * 0.5);
+                ctx.moveTo(d.x + r, d.y); ctx.arc(d.x, d.y, r, 0, 6.2832);
+            }
+            ctx.fill();
+        }
+    }
+
+    function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+    function mix(c1, c2, t) { return 'rgb(' + lerp(c1[0], c2[0], t) + ',' + lerp(c1[1], c2[1], t) + ',' + lerp(c1[2], c2[2], t) + ')'; }
+    var BASE = [[12, 14, 32], [12, 14, 32]], VIOLET = [103, 61, 230], MAG = [194, 59, 208];
+    var NB2 = 14, ZPAL = [[], []];
+    function colorAt(t, base) {
+        if (t < 0.4) return mix(VIOLET, MAG, t / 0.4);
+        if (t < 0.75) return mix(MAG, VIOLET, (t - 0.4) / 0.35);
+        return mix(VIOLET, base, (t - 0.75) / 0.25);
+    }
+    for (var ci = 0; ci < 2; ci++) for (var si = 0; si < NB2; si++) ZPAL[ci].push(colorAt(si / (NB2 - 1), BASE[ci]));
+    function drawZ() {
+        var ci, b, i, d;
+        for (ci = 0; ci < 2; ci++) {
+            for (b = 0; b < NB2; b++) {
+                ctx.fillStyle = ZPAL[ci][b];
+                ctx.beginPath();
+                for (i = 0; i < zDots.length; i++) {
+                    d = zDots[i];
+                    if (d.col !== ci) continue;
+                    var bi = Math.min(NB2 - 1, Math.round(d.t * (NB2 - 1)));
+                    if (bi !== b) continue;
+                    var r = zR * (1 + (1 - d.t) * 0.2);
+                    ctx.moveTo(d.x + r, d.y); ctx.arc(d.x, d.y, r, 0, 6.2832);
+                }
+                ctx.fill();
+            }
+        }
+    }
+
+    var T = 0;
+    function drawPins() {
+        ctx.font = '500 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+        ctx.textBaseline = 'middle';
+        for (var i = 0; i < pins.length; i++) {
+            var p = pins[i];
+            var want = (T >= p.showT && T < p.hideT) ? 1 : 0;
+            p.a += want ? Math.min(0.05, 1 - p.a) : -Math.min(0.07, p.a);
+            if (pointer.active) {
+                var pdx = p.x - pointer.x, pdy = p.y - pointer.y, pd = Math.sqrt(pdx * pdx + pdy * pdy);
+                if (pd < revealR) p.pa = Math.min(1, p.pa + 0.16 * (1 - pd / revealR) + 0.03);
+            }
+            p.pa = Math.max(0, p.pa - 0.012);
+            var pal = p.a > p.pa ? p.a : p.pa;
+            if (pal < 0.03) continue;
+            var tw = ctx.measureText(p.label).width;
+            // flicker: quick blinks while a tag fades in or out, and now and then while the map is on
+            var fl = 1;
+            if (p.a > 0.02 && p.a < 0.98 && p.pa < 0.5) fl = (Math.floor(T * 15 + p.jit * 7) % 2) ? 0.3 : 1;
+            else if (p.a >= 0.98) {
+                if (!p.nb) p.nb = T + 0.8 + p.jit * 2.8;
+                if (T > p.nb + 0.26) p.nb = T + 1.4 + Math.random() * 3.2;
+                else if (T >= p.nb) fl = (Math.floor((T - p.nb) * 15) % 2) ? 0.3 : 1;
+            }
+            ctx.globalAlpha = pal * fl;
+            ctx.fillStyle = 'rgba(236,232,255,0.85)';
+            ctx.fillRect(p.x + 4, p.y - 8, tw + 12, 16);
+            ctx.fillStyle = p.home ? '#a626c0' : '#4338ca';
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.home ? 3.6 : 3, 0, 6.2832); ctx.fill();
+            ctx.fillStyle = '#2e2a6e';
+            ctx.fillText(p.label, p.x + 10, p.y + 0.5);
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    var lastT = 0;
+    function frame(ts) {
+        T = (performance.now() - t0) / 1000;
+        if (reduce) T = Math.max(T, 6);
+        var dt = lastT ? Math.min(100, ts - lastT) : 16.7; lastT = ts;
+        var steps = Math.max(1, Math.min(8, Math.round(dt / 16.7 * 2)));
+        ctx.clearRect(0, 0, W, H);
+        if (T >= cycle.end) { cycle.n++; scheduleCycle(T + 0.2); }
+        move(mapDots, true, T, steps);
+        move(zDots, false, T, steps);
+        drawMap();
+        drawPins();
+        drawZ();
+        requestAnimationFrame(frame);
+    }
+
+    var soonEl = document.querySelector('.soon');
+    function setPointer(x, y) {
+        pointer.x = x; pointer.y = y; pointer.active = true;
+        if (soonEl) { var r = soonEl.getBoundingClientRect(); var fx = Math.min(1, Math.max(0, (x - r.left) / r.width)); soonEl.style.setProperty('--mx', (fx * 100).toFixed(1) + '%'); }
+    }
+    window.addEventListener('pointermove', function (e) { setPointer(e.clientX, e.clientY); }, { passive: true });
+    window.addEventListener('pointerdown', function (e) { setPointer(e.clientX, e.clientY); }, { passive: true });
+    window.addEventListener('pointerup', function (e) { if (e.pointerType === 'touch') pointer.active = false; });
+    document.addEventListener('mouseleave', function () { pointer.active = false; });
+    window.addEventListener('resize', build);
+
+    build();
+    requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
